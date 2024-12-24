@@ -1,14 +1,18 @@
-import styles from "./styles.module.css";
+import { TCategory } from "@cutomTypes/category";
+import { Link } from "react-router-dom";
 
+import styles from "./styles.module.css";
 const { category, categoryImg, categoryTitle } = styles;
 
-const Category = () => {
+const Category = ({ name, img, prefix }: TCategory) => {
   return (
     <div className={category}>
-      <div className={categoryImg}>
-        <img src="https://placecats.com/300/300" alt="Cat Placeholder" />
-      </div>
-      <h4 className={categoryTitle}>Title</h4>
+      <Link to={`products/${prefix}`}>
+        <div className={categoryImg}>
+          <img src={img} alt={name} />
+        </div>
+        <h4 className={categoryTitle}>{name}</h4>
+      </Link>
     </div>
   );
 };

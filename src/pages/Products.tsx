@@ -6,7 +6,9 @@ import {
   productsCleanUp,
 } from "@store/products/productsSlice";
 import { Product } from "@components/eCommerce";
-import { Container, Col, Row } from "react-bootstrap";
+import { GridList } from "@components/common";
+import { Container } from "react-bootstrap";
+import { Loading } from "@components/feedback/";
 
 const Products = () => {
   const dispatch = useAppDispatch();
@@ -21,23 +23,14 @@ const Products = () => {
     };
   }, [dispatch, params]);
 
-  const productList =
-    records.length > 0
-      ? records.map((record) => (
-          <Col
-            xs={6}
-            md={3}
-            key={record.id}
-            className="d-flex justify-content-center mb-5 mt-2"
-          >
-            <Product {...record} />
-          </Col>
-        ))
-      : "There are no Products";
-
   return (
     <Container>
-      <Row>{productList}</Row>
+      <Loading status={loading} error={error}>
+        <GridList
+          records={records}
+          renderItem={(record) => <Product {...record} />}
+        />
+      </Loading>
     </Container>
   );
 };

@@ -3,11 +3,14 @@
   align-self: flex-end;
   display: flex;
   align-items: center;
+  border-right: 1px solid black;
+  padding-right: 10px;
+  margin-right: 10px;
 }
 
 .container h3 {
   font-size: 15px;
-  margin-left: 4px;
+  margin-left: 1px;
   margin-bottom: 0;
 }
 
@@ -26,9 +29,6 @@
   top: -11px;
   right: -5px;
   font-size: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .pumpAnimate {

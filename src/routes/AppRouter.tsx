@@ -6,6 +6,7 @@ import MainLayout from "@layouts/MainLayout/MainLayout";
 // Pages
 import Home from "@pages/Home";
 import ShoppingCart from "@pages/ShoppingCart";
+import Wishlist from "@pages/Wishlist";
 import AboutUs from "@pages/AboutUs";
 import Categories from "@pages/Categories";
 import Products from "@pages/Products";
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: "cart",
         element: <ShoppingCart />,
+      },
+      {
+        path: "wishlist",
+        element: <Wishlist />,
       },
       {
         path: "categories",

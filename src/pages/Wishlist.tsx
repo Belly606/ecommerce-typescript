@@ -6,7 +6,6 @@ import {
 } from "@store/wishlist/wishlistSlice";
 import { Product } from "@components/eCommerce";
 import { GridList, Heading } from "@components/common";
-import { Container } from "react-bootstrap";
 import { Loading } from "@components/feedback/";
 
 const Wishlist = () => {
@@ -32,15 +31,13 @@ const Wishlist = () => {
 
   return (
     <>
-      <Container>
-        <Heading>Your Wishlist</Heading>
-        <Loading status={loading} error={error}>
-          <GridList
-            records={records}
-            renderItem={(record) => <Product {...record} />}
-          />
-        </Loading>
-      </Container>
+      <Heading>Your Wishlist</Heading>
+      <Loading status={loading} error={error}>
+        <GridList
+          records={records}
+          renderItem={(record) => <Product {...record} />}
+        />
+      </Loading>
     </>
   );
 };

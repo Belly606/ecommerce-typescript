@@ -1,19 +1,22 @@
 .product {
-  width: 120px;
+  width: 130px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
 }
 
 .productImg {
-  width: 150px;
+  width: 100%px;
   height: 150px;
   background-color: #f2f2f2;
+  object-fit: contain;
 }
 
 .productImg img {
   display: block;
   height: 100%;
+  width: 100%;
 }
 
 .product h2 {
@@ -41,4 +44,17 @@
 .maximumNotice {
   font-size: 12px;
   margin-bottom: 7px;
+}
+
+.wishlistBtn {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  cursor: pointer;
+}
+
+.spinner {
+  position: absolute;
+  top: 7px;
+  right: 7px;
 }

@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import { useAppSelector } from "@store/hooks";
+// import { useAppSelector } from "@store/hooks";
 import { useNavigate } from "react-router-dom";
-import { getCartTotalQuantitySelector } from "@store/cart/selectors";
-import Cart from "@assets/svg/cart.svg?react";
+import Wishlist from "@assets/svg/wishlist.svg?react";
 
 import styles from "./styles.module.css";
+import { useAppSelector } from "@store/hooks";
 
 const { container, totalNum, pumpAnimate, iconWrapper } = styles;
-const HeaderCart = () => {
+const HeaderWishlist = () => {
   const navigate = useNavigate();
 
   const [isAnimate, setIsAnimate] = useState(false);
-  const totalQuantity = useAppSelector(getCartTotalQuantitySelector);
+  const totalQuantity = useAppSelector((state) => state.wishlist.itemsId);
   const quantityStyle = `${totalNum} ${isAnimate ? pumpAnimate : ""}`;
 
   useEffect(() => {
@@ -32,16 +32,16 @@ const HeaderCart = () => {
   }, [totalQuantity]);
 
   return (
-    <div className={container} onClick={() => navigate("/cart")}>
+    <div className={container} onClick={() => navigate("/wishlist")}>
       <div className={iconWrapper}>
-        <Cart title="Cart" />
-        {totalQuantity > 0 && (
-          <div className={quantityStyle}>{totalQuantity}</div>
+        <Wishlist title="Wishlist" />
+        {totalQuantity.length > 0 && (
+          <div className={quantityStyle}>{totalQuantity.length}</div>
         )}
       </div>
-      <h3>Cart</h3>
+      <h3>Wishlist</h3>
     </div>
   );
 };
 
-export default HeaderCart;
+export default HeaderWishlist;

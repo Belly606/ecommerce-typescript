@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-// import { useAppSelector } from "@store/hooks";
+import { useAppSelector } from "@store/hooks";
 import { useNavigate } from "react-router-dom";
 import Wishlist from "@assets/svg/wishlist.svg?react";
 
 import styles from "./styles.module.css";
-import { useAppSelector } from "@store/hooks";
-
 const { container, totalNum, pumpAnimate, iconWrapper } = styles;
+
 const HeaderWishlist = () => {
   const navigate = useNavigate();
 

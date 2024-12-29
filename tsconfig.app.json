@@ -26,8 +26,10 @@
       "@pages/*": ["./src/pages/*"],
       "@routes/*": ["./src/routes/*"],
       "@store/*": ["./src/store/*"],
-      "@cutomTypes/*": ["./src/types/*"],
-      "@utils/*": ["./src/utils/*"],
+      "@store": ["./src/store/index"],
+      "@types": ["./src/types/index"],
+      "@utils/*": ["src/utils/*"],
+      "@utils": ["src/utils/index.ts"],
       "@styles/*": ["./src/styles/*"],
       "@services/*": ["./src/services/*"]
     },

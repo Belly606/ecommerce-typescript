@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { Form, Button } from "react-bootstrap";
-import { TProduct } from "@cutomTypes/product";
+import { TProduct } from "@types";
 
 import styles from "./styles.module.css";
 import React from "react";

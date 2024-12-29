@@ -1,4 +1,4 @@
-import { TLoading } from "@cutomTypes/shared";
+import { TLoading } from "@types";
 
 type TLoadingProps = {
   status: TLoading;

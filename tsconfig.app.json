@@ -31,7 +31,8 @@
       "@utils/*": ["src/utils/*"],
       "@utils": ["src/utils/index.ts"],
       "@styles/*": ["./src/styles/*"],
-      "@services/*": ["./src/services/*"]
+      "@services/*": ["./src/services/*"],
+      "@validatons/*": ["./src/validations/*"]
     },
 
     /* Linting */

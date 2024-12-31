@@ -1,47 +1,25 @@
-import { useForm, SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { signUpSchema, signupType } from "@validatons/signUpSchema";
-import useCheckEmailAvailability from "@hooks/useCheckEmailAvailability";
+import { Navigate } from "react-router-dom";
+import useRegister from "@hooks/useRegister";
 import { Input } from "@components/form";
 import { Heading } from "@components/common";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button, Row, Col, Spinner } from "react-bootstrap";
 
 const Register = () => {
   const {
+    loading,
+    error,
+    accessToken,
+    formErrors,
+    emailAvailabilityStatus,
+    emailOnBlurHandler,
+    submitForm,
     register,
     handleSubmit,
-    trigger,
-    getFieldState,
-    formState: { errors },
-  } = useForm<signupType>({
-    mode: "onBlur",
-    resolver: zodResolver(signUpSchema),
-  });
+  } = useRegister();
 
-  const {
-    emailAvailabilityStatus,
-    enteredEmail,
-    checkEmailAvailability,
-    resetCheckEmailAvailability,
-  } = useCheckEmailAvailability();
-
-  const submitForm: SubmitHandler<signupType> = (data) => {
-    console.log(data);
-  };
-
-  const emailOnBlurHandler = async (e: React.FocusEvent<HTMLInputElement>) => {
-    await trigger("email");
-    const value = e.target.value;
-    const { isDirty, invalid } = getFieldState("email");
-    if (isDirty && !invalid && enteredEmail !== value) {
-      // Checking
-      checkEmailAvailability(value);
-    }
-
-    if (isDirty && !invalid && enteredEmail) {
-      resetCheckEmailAvailability();
-    }
-  };
+  if (accessToken) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <>
@@ -53,13 +31,13 @@ const Register = () => {
               label="First Name"
               name="firstName"
               register={register}
-              error={errors.firstName?.message || ""}
+              error={formErrors.firstName?.message || ""}
             />
             <Input
               label="Last Name"
               name="lastName"
               register={register}
-              error={errors.lastName?.message || ""}
+              error={formErrors.lastName?.message || ""}
             />
             <Input
               label="Email address"
@@ -67,8 +45,8 @@ const Register = () => {
               register={register}
               onBlur={emailOnBlurHandler}
               error={
-                errors.email?.message
-                  ? errors.email?.message || ""
+                formErrors.email?.message
+                  ? formErrors.email?.message || ""
                   : emailAvailabilityStatus === "unavailable"
                   ? "This email is already in use."
                   : emailAvailabilityStatus === "failed"
@@ -90,23 +68,36 @@ const Register = () => {
               name="password"
               type="password"
               register={register}
-              error={errors.password?.message || ""}
+              error={formErrors.password?.message || ""}
             />
             <Input
               label="Confirm Password"
               name="confirmPassword"
               type="password"
               register={register}
-              error={errors.confirmPassword?.message || ""}
+              error={formErrors.confirmPassword?.message || ""}
             />
             <Button
               variant="info"
               type="submit"
               style={{ color: "white" }}
-              disabled={emailAvailabilityStatus === "checking" ? true : false}
+              disabled={
+                emailAvailabilityStatus === "checking" || loading === "pending"
+                  ? true
+                  : false
+              }
             >
-              Submit
+              {loading === "pending" ? (
+                <>
+                  <Spinner animation="border" size="sm"></Spinner> Loding...
+                </>
+              ) : (
+                "Register"
+              )}
             </Button>
+            {error && (
+              <p style={{ color: "#DC3545", marginTop: "10px" }}>{error}</p>
+            )}
           </Form>
         </Col>
       </Row>

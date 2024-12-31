@@ -1,45 +1,64 @@
-import { useForm, SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { signInSchema, signInType } from "@validatons/signInSchema";
+import { Navigate } from "react-router-dom";
+import useLogin from "@hooks/useLogin";
 import { Input } from "@components/form";
 import { Heading } from "@components/common";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button, Row, Col, Alert, Spinner } from "react-bootstrap";
 
 const Login = () => {
   const {
+    loading,
+    error,
+    accessToken,
+    formErrors,
+    searchParams,
+    submitForm,
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<signInType>({
-    mode: "onBlur",
-    resolver: zodResolver(signInSchema),
-  });
+  } = useLogin();
 
-  const submitForm: SubmitHandler<signInType> = (data) => {
-    console.log(data);
-  };
+  if (accessToken) {
+    return <Navigate to="/" />;
+  }
+
   return (
     <>
       <Heading title="User Login" />
       <Row>
         <Col md={{ span: 6, offset: 3 }}>
+          {searchParams.get("message") === "login_required" && (
+            <Alert variant="danger">You need to login to view this page</Alert>
+          )}
+          {searchParams.get("message") === "account_created" && (
+            <Alert variant="success">
+              Your account successfully created, please login
+            </Alert>
+          )}
           <Form onSubmit={handleSubmit(submitForm)}>
             <Input
               label="Email address"
               name="email"
               register={register}
-              error={errors.email?.message || ""}
+              error={formErrors.email?.message || ""}
             />
             <Input
               label="Password"
               name="password"
               type="password"
               register={register}
-              error={errors.password?.message || ""}
+              error={formErrors.password?.message || ""}
             />
             <Button variant="info" type="submit" style={{ color: "white" }}>
-              Submit
+              {loading === "pending" ? (
+                <>
+                  <Spinner animation="border" size="sm"></Spinner> Loding...
+                </>
+              ) : (
+                "Login"
+              )}
             </Button>
+            {error && (
+              <p style={{ color: "#DC3545", marginTop: "10px" }}>{error}</p>
+            )}
           </Form>
         </Col>
       </Row>

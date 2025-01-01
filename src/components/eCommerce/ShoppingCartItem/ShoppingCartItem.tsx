@@ -1,12 +1,12 @@
 import { memo } from "react";
+import ProductInfo from "@components/eCommerce/ProductInfo/ProductInfo";
 import { Form, Button } from "react-bootstrap";
 import { TProduct } from "@types";
 
 import styles from "./styles.module.css";
 import React from "react";
 
-const { cartItem, product, productImg, productInfo, cartItemSelection } =
-  styles;
+const { cartItem, cartItemSelection } = styles;
 
 type TShoppingCartItemProps = TProduct & {
   changeQuantityHandler: (id: number, quantity: number) => void;
@@ -43,23 +43,21 @@ const ShoppingCartItem = memo(
 
     return (
       <div className={cartItem}>
-        <div className={product}>
-          <div className={productImg}>
-            <img src={images[0]} alt={title} />
-          </div>
-          <div className={productInfo}>
-            <h2>{title}</h2>
-            <h3>{price.toFixed(2)} EGP</h3>
-            <Button
-              variant="secondary"
-              style={{ color: "white" }}
-              className="mt-auto"
-              onClick={() => removeItemHandler(id)}
-            >
-              Remove
-            </Button>
-          </div>
-        </div>
+        <ProductInfo
+          title={title}
+          price={price}
+          images={images}
+          direction="column"
+        >
+          <Button
+            variant="secondary"
+            style={{ color: "white" }}
+            className="mt-auto"
+            onClick={() => removeItemHandler(id)}
+          >
+            Remove
+          </Button>
+        </ProductInfo>
 
         <div className={cartItemSelection}>
           <span className="d-block mb-1">Quantity</span>

@@ -3,20 +3,14 @@ import { useAppDispatch } from "@store/hooks";
 import { useNavigate } from "react-router-dom";
 import { addToCart } from "@store/cart/cartSlice";
 import { actLikeToggle } from "@store/wishlist/wishlistSlice";
-import { Button, Spinner, Modal } from "react-bootstrap";
 import Like from "@assets/svg/like.svg?react";
 import LikeFill from "@assets/svg/like-fill.svg?react";
+import ProductInfo from "../ProductInfo/ProductInfo";
+import { Button, Spinner, Modal } from "react-bootstrap";
 import { TProduct } from "@types";
 
 import styles from "./styles.module.css";
-const {
-  product,
-  productImg,
-  productDescription,
-  maximumNotice,
-  wishlistBtn,
-  spinner,
-} = styles;
+const { maximumNotice, wishlistBtn, spinner } = styles;
 
 const Product = memo(
   ({
@@ -92,7 +86,13 @@ const Product = memo(
             </Button>
           </Modal.Footer>
         </Modal>
-        <div className={product}>
+
+        <ProductInfo
+          title={title}
+          images={images}
+          price={price}
+          description={description}
+        >
           {isLoading ? (
             <Spinner
               className={`${spinner} text-danger`}
@@ -104,12 +104,6 @@ const Product = memo(
           ) : (
             <Like className={wishlistBtn} onClick={likeToggleHandler} />
           )}
-          <div className={productImg}>
-            <img src={images[0]} alt={title} />
-          </div>
-          <h2 title={title}>{title}</h2>
-          <p className={productDescription}>{description}</p>
-          <h3>{price.toFixed(2)} EGP</h3>
           <p className={maximumNotice}>{`${
             quantityReachedToMax
               ? "You've reached to the limit"
@@ -118,7 +112,7 @@ const Product = memo(
           <Button
             onClick={addToCartHandler}
             variant="info"
-            style={{ color: "white" }}
+            style={{ color: "white", width: "100%" }}
             disabled={isBtnDisabled || quantityReachedToMax}
           >
             {isBtnDisabled ? (
@@ -129,7 +123,7 @@ const Product = memo(
               "Add to Cart"
             )}
           </Button>
-        </div>
+        </ProductInfo>
       </>
     );
   }

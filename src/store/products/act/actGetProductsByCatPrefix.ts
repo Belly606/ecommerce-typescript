@@ -10,9 +10,7 @@ const actGetProductsByCatPrefix = createAsyncThunk(
     const { rejectWithValue } = ThunkAPI;
 
     try {
-      const res = await axios.get<TResponse>(
-        `http://localhost:5005/products?cat_prefix=${prefix}`
-      );
+      const res = await axios.get<TResponse>(`/products?cat_prefix=${prefix}`);
       return res.data;
     } catch (error) {
       if (isAxiosError(error)) {

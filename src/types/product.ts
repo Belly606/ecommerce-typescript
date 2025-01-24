@@ -4,4 +4,6 @@ export type TProduct = {
   cat_prefix: string;
   image: string;
   price: number;
+  quantity?: number;
+  max: number;
 };

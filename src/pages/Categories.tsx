@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
 import { actGetCategories } from "@store/categories/categoriesSlice";
-import { GridList } from "@components/common";
+import { GridList, Heading } from "@components/common";
 import { Category } from "@components/eCommerce";
 import { Loading } from "@components/feedback";
 import { Container } from "react-bootstrap";
@@ -21,6 +21,7 @@ const Categories = () => {
 
   return (
     <Container>
+      <Heading>Categories</Heading>
       <Loading status={loading} error={error}>
         <GridList
           records={records}

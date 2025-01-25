@@ -5,6 +5,7 @@ import { MainLayout } from "@layouts/index";
 
 // Pages
 import Home from "@pages/Home";
+import Cart from "@pages/Cart";
 import Categories from "@pages/Categories";
 import Products from "@pages/Products";
 import AboutUs from "@pages/AboutUs";
@@ -22,6 +23,7 @@ const router = createBrowserRouter([
         index: true,
         element: <Home />,
       },
+      { path: "/cart", element: <Cart /> },
       {
         path: "categories",
         element: <Categories />,

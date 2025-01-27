@@ -5,7 +5,7 @@ import { actLikeToggle } from "@store/wishlist/wishlistSlice";
 import Like from "@assets/svg/like.svg?react";
 import LikeFill from "@assets/svg/like-fill.svg?react";
 import { Button, Spinner } from "react-bootstrap";
-import { TProduct } from "@cutomTypes/product";
+import { TProduct } from "@types";
 
 import styles from "./styles.module.css";
 const { product, productImg, maximumNotice, wishlistBtn } = styles;

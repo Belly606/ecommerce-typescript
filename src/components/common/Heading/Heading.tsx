@@ -1,5 +1,7 @@
-const Heading = ({ children }: { children: React.ReactNode }) => {
-  return <h2 className="mb-3">{children}</h2>;
-};
+import { memo } from "react";
+
+const Heading = memo(({ title }: { title: string }) => {
+  return <h2 className="mb-3">{title}</h2>;
+});
 
 export default Heading;

@@ -1,23 +1,22 @@
-import { TProduct } from "@cutomTypes/product";
+import { TProduct } from "@types";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios, { isAxiosError } from "axios";
+import axios from "axios";
+import { axiosErrorHandler } from "@utils";
 
 type TResponse = TProduct[];
 
 const actGetProductsByCatPrefix = createAsyncThunk(
   "products/actGetProductsByCatPrefix",
   async (prefix: string, ThunkAPI) => {
-    const { rejectWithValue } = ThunkAPI;
+    const { rejectWithValue, signal } = ThunkAPI;
 
     try {
-      const res = await axios.get<TResponse>(`/products?cat_prefix=${prefix}`);
+      const res = await axios.get<TResponse>(`/products?cat_prefix=${prefix}`, {
+        signal,
+      });
       return res.data;
     } catch (error) {
-      if (isAxiosError(error)) {
-        return rejectWithValue(error.response?.data.message || error.message);
-      } else {
-        return rejectWithValue("An unexpected error");
-      }
+      return rejectWithValue(axiosErrorHandler(error));
     }
   }
 );

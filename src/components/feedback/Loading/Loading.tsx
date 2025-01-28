@@ -3,6 +3,7 @@ import ProductSkeleton from "../skeletons/ProductSkeleton/ProductSkeleton";
 import CartSkeleton from "../skeletons/CartSkeleton/CartSkeleton";
 
 import { TLoading } from "@types";
+import LottieHandler from "../LottieHandler/LottieHandler";
 
 const skeletonsTypes = {
   cart: CartSkeleton,
@@ -30,7 +31,11 @@ const Loading = ({
   }
 
   if (status === "failed") {
-    return <div>{error}</div>;
+    return (
+      <div>
+        <LottieHandler type="error" message={error as string} />
+      </div>
+    );
   }
 
   return <div>{children}</div>;

@@ -1,6 +1,6 @@
 import useCart from "@hooks/useCart";
 import { Heading } from "../components/common/index";
-import { Loading } from "@components/feedback";
+import { Loading, LottieHandler } from "@components/feedback";
 import { CartItemList, CartSubtotalPrice } from "@components/eCommerce";
 
 const Cart = () => {
@@ -21,7 +21,7 @@ const Cart = () => {
             <CartSubtotalPrice products={products} />
           </>
         ) : (
-          "Your Cart is Empty"
+          <LottieHandler type="cartEmpty" message="Your Cart is Empty" />
         )}
       </Loading>
     </>

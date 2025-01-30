@@ -1,12 +1,22 @@
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@store/hooks";
+import { actAuthRegister, resetUI } from "@store/auth/authSlice";
+import { useNavigate, Navigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, TRegisterType } from "@validations/registerSchema";
 import useCheckEmailAvailability from "@hooks/useCheckEmailAvailability";
 import { Heading } from "@components/common";
 import { Input } from "@forms/index";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button, Row, Col, Spinner } from "react-bootstrap";
 
 const Register = () => {
+  const navigate = useNavigate();
+
+  const dispatch = useAppDispatch();
+
+  const { loading, error, accessToken } = useAppSelector((state) => state.auth);
+
   const {
     register,
     handleSubmit,
@@ -25,7 +35,14 @@ const Register = () => {
     resetCheckEmailAvailability,
   } = useCheckEmailAvailability();
 
-  const submitForm: SubmitHandler<TRegisterType> = (data) => console.log(data);
+  const submitForm: SubmitHandler<TRegisterType> = async (data) => {
+    const { firstName, lastName, email, password } = data;
+    dispatch(actAuthRegister({ firstName, lastName, email, password }))
+      .unwrap()
+      .then(() => {
+        navigate("/login?message=account_created");
+      });
+  };
 
   const emailOnBlurHandler = async (e: React.FocusEvent<HTMLInputElement>) => {
     await trigger("email");
@@ -37,10 +54,20 @@ const Register = () => {
       checkEmailAvailability(value);
     }
 
-    if (isDirty && !invalid && enteredEmail) {
+    if (isDirty && invalid && enteredEmail) {
       resetCheckEmailAvailability();
     }
   };
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetUI());
+    };
+  }, [dispatch]);
+
+  if (accessToken) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <>
@@ -109,10 +136,26 @@ const Register = () => {
               variant="info"
               type="submit"
               style={{ color: "white" }}
-              disabled={emailAvailabilityStatus === "checking" ? true : false}
+              disabled={
+                emailAvailabilityStatus === "checking"
+                  ? true
+                  : // eslint-disable-next-line no-constant-binary-expression
+                    false || loading === "pending"
+              }
             >
-              Submit
+              {loading === "pending" ? (
+                <>
+                  {" "}
+                  <Spinner
+                    animation="border"
+                    size="sm"
+                  ></Spinner> Loading...{" "}
+                </>
+              ) : (
+                "submit"
+              )}
             </Button>
+            {error && <p className="text-danger">{error}</p>}
           </Form>
         </Col>
       </Row>

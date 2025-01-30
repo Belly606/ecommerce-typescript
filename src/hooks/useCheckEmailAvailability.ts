@@ -14,7 +14,7 @@ const useCheckEmailAvailability = () => {
 
     try {
       const response = await axios.get(`/users?email=${email}`);
-      if (response.data.legth) {
+      if (!response.data.legth) {
         setEmailAvailabilityStatus("available");
       } else {
         setEmailAvailabilityStatus("notAvailable");

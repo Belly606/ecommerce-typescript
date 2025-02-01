@@ -1,48 +1,20 @@
-import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "@store/hooks";
-import { actAuthLogin, resetUI } from "@store/auth/authSlice";
-import { useSearchParams, useNavigate, Navigate } from "react-router-dom";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, TLoginType } from "@validations/loginSchema";
+import useLogin from "@hooks/useLogin";
+import { Navigate } from "react-router-dom";
 import { Input } from "@forms/index";
 import { Heading } from "@components/common";
 import { Form, Button, Row, Col, Alert, Spinner } from "react-bootstrap";
 
 const Login = () => {
-  const navigate = useNavigate();
-
-  const dispatch = useAppDispatch();
-
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const { loading, error, accessToken } = useAppSelector((state) => state.auth);
-
   const {
+    loading,
+    error,
+    accessToken,
+    formErrors,
+    searchParams,
+    submitForm,
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<TLoginType>({
-    mode: "onBlur",
-    resolver: zodResolver(loginSchema),
-  });
-
-  const submitForm: SubmitHandler<TLoginType> = async (data) => {
-    if (searchParams.get("message")) {
-      setSearchParams("");
-    }
-    dispatch(actAuthLogin(data))
-      .unwrap()
-      .then(() => {
-        navigate("/");
-      });
-  };
-
-  useEffect(() => {
-    return () => {
-      dispatch(resetUI());
-    };
-  }, [dispatch]);
+  } = useLogin();
 
   if (accessToken) {
     return <Navigate to="/" />;
@@ -68,7 +40,7 @@ const Login = () => {
               label="Email address"
               name="email"
               register={register}
-              error={errors.email?.message as string}
+              error={formErrors.email?.message as string}
             />
 
             <Input
@@ -76,7 +48,7 @@ const Login = () => {
               name="password"
               type="password"
               register={register}
-              error={errors.password?.message as string}
+              error={formErrors.password?.message as string}
             />
 
             <Button

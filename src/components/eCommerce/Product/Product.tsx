@@ -4,17 +4,31 @@ import { addToCart } from "@store/cart/cartSlice";
 import { actLikeToggle } from "@store/wishlist/wishlistSlice";
 import Like from "@assets/svg/like.svg?react";
 import LikeFill from "@assets/svg/like-fill.svg?react";
-import { Button, Spinner } from "react-bootstrap";
+import { Button, Modal, Spinner } from "react-bootstrap";
 import { TProduct } from "@types";
 
 import styles from "./styles.module.css";
 const { product, productImg, maximumNotice, wishlistBtn } = styles;
 
 const Product = memo(
-  ({ id, title, image, price, max, quantity, isLiked }: TProduct) => {
+  ({
+    id,
+    title,
+    image,
+    price,
+    max,
+    quantity,
+    isLiked,
+    isAuthenticated,
+  }: TProduct) => {
     const dispatch = useAppDispatch();
+
     const [isBtnClicked, setIsBtnClicked] = useState(0);
+
+    const [showModal, setShowModal] = useState(false);
+
     const [isBtnDisabled, setIsBtnDisabled] = useState(false);
+
     const [isLoading, setIsLoading] = useState(false);
 
     const currentRemainingQuantity = max - (quantity ?? 0);
@@ -39,51 +53,70 @@ const Product = memo(
     };
 
     const likeToggleHandler = () => {
-      if (!isLoading) {
-        setIsLoading(true);
-        dispatch(actLikeToggle(id))
-          .unwrap()
-          .then(() => setIsLoading(false))
-          .catch(() => setIsLoading(false));
+      if (isAuthenticated) {
+        if (!isLoading) {
+          setIsLoading(true);
+          dispatch(actLikeToggle(id))
+            .unwrap()
+            .then(() => setIsLoading(false))
+            .catch(() => setIsLoading(false));
+        }
+      } else {
+        setShowModal(true);
       }
     };
 
     return (
-      <div className={product}>
-        <div className={wishlistBtn} onClick={likeToggleHandler}>
-          {isLoading ? (
-            <Spinner animation="border" size="sm" variant="danger" />
-          ) : isLiked ? (
-            <LikeFill />
-          ) : (
-            <Like />
-          )}
-        </div>
-        <div className={productImg}>
-          <img src={image} alt={title} />
-        </div>
-        <h2 title={title}>{title}</h2>
-        <h3>{price.toFixed(2)} EGP</h3>
-        <p className={maximumNotice}>
-          {quantityReachedToMax
-            ? "Out of stock"
-            : `Remaining: ${currentRemainingQuantity}`}
-        </p>
-        <Button
-          variant="info"
-          style={{ color: "white" }}
-          onClick={addToCartHandler}
-          disabled={isBtnDisabled || quantityReachedToMax}
+      <>
+        <Modal
+          show={showModal}
+          onHide={() => {
+            setShowModal(false);
+          }}
         >
-          {isBtnDisabled ? (
-            <>
-              <Spinner animation="border" size="sm" /> Loading...
-            </>
-          ) : (
-            "Add to cart"
-          )}
-        </Button>
-      </div>
+          <Modal.Header closeButton>
+            <Modal.Title>Login required</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            You need to login first to add this item to your wishlist.
+          </Modal.Body>
+        </Modal>
+        <div className={product}>
+          <div className={wishlistBtn} onClick={likeToggleHandler}>
+            {isLoading ? (
+              <Spinner animation="border" size="sm" variant="danger" />
+            ) : isLiked ? (
+              <LikeFill />
+            ) : (
+              <Like />
+            )}
+          </div>
+          <div className={productImg}>
+            <img src={image} alt={title} />
+          </div>
+          <h2 title={title}>{title}</h2>
+          <h3>{price.toFixed(2)} EGP</h3>
+          <p className={maximumNotice}>
+            {quantityReachedToMax
+              ? "Out of stock"
+              : `Remaining: ${currentRemainingQuantity}`}
+          </p>
+          <Button
+            variant="info"
+            style={{ color: "white" }}
+            onClick={addToCartHandler}
+            disabled={isBtnDisabled || quantityReachedToMax}
+          >
+            {isBtnDisabled ? (
+              <>
+                <Spinner animation="border" size="sm" /> Loading...
+              </>
+            ) : (
+              "Add to cart"
+            )}
+          </Button>
+        </div>
+      </>
     );
   }
 );

@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import actLikeToggle from "./act/actLikeToggle";
-import actGetWshlist from "./act/actGetWishlist";
+import actGetWishlist from "./act/actGetWishlist";
+import { authLogout } from "@store/auth/authSlice";
 import { TProduct, TLoading, isString } from "@types";
 
 type TWishlistState = {
@@ -45,23 +46,33 @@ const wishlistSlice = createSlice({
       }
     });
     // Get Wishlist Items
-    builder.addCase(actGetWshlist.pending, (state) => {
+    builder.addCase(actGetWishlist.pending, (state) => {
       state.loading = "pending";
       state.error = null;
     });
-    builder.addCase(actGetWshlist.fulfilled, (state, action) => {
+    builder.addCase(actGetWishlist.fulfilled, (state, action) => {
       state.loading = "succeeded";
-      state.productsFullInfo = action.payload;
+      if (action.payload.dataType === "productsFullInfo") {
+        state.productsFullInfo = action.payload.data as TProduct[];
+      } else if (action.payload.dataType === "ProductIds") {
+        state.itemsId = action.payload.data as number[];
+      }
     });
-    builder.addCase(actGetWshlist.rejected, (state, action) => {
+    builder.addCase(actGetWishlist.rejected, (state, action) => {
       state.loading = "failed";
       if (isString(action.payload)) {
         state.error = action.payload;
       }
     });
+
+    // When logout reset
+    builder.addCase(authLogout, (state) => {
+      state.itemsId = [];
+      state.productsFullInfo = [];
+    });
   },
 });
 
-export { actLikeToggle, actGetWshlist };
+export { actLikeToggle, actGetWishlist };
 export const { wishlistProductsFullInfoCleanUp } = wishlistSlice.actions;
 export default wishlistSlice.reducer;

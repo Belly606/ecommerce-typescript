@@ -1,0 +1,11 @@
+.maximumNotice {
+  font-size: 12px;
+  margin-bottom: 7px;
+}
+
+.wishlistBtn {
+  position: absolute;
+  top: 5px;
+  right: 7px;
+  cursor: pointer;
+}

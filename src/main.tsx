@@ -1,3 +1,8 @@
 import { createRoot } from "react-dom/client";
+import AppRouter from "@routes/AppRouter";
 
-createRoot(document.getElementById("root")!).render(<div>Hello World</div>);
+// Styles
+import "bootstrap/dist/css/bootstrap.min.css";
+import "@styles/global.css";
+
+createRoot(document.getElementById("root")!).render(<AppRouter />);

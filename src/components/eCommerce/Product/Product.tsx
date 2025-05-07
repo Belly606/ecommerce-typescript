@@ -1,19 +1,60 @@
+import { useEffect, useState } from "react";
+import { useAppDispatch } from "@store/hooks";
+import { addToCart } from "@store/cart/cartSlice";
+import { Button, Spinner } from "react-bootstrap";
 import { TProduct } from "@customTypes/product";
-import { Button } from "react-bootstrap";
 
 import styles from "./styles.module.css";
-const { product, productImg } = styles;
+const { product, productImg, maximumNotice } = styles;
 
-const Product = ({ title, img, price }: TProduct) => {
+const Product = ({ id, title, img, price, quantity, max }: TProduct) => {
+  const dispatch = useAppDispatch();
+  const [istBtnDisabled, setIsBtnDisabled] = useState(false);
+
+  const currentRemainingQuantity = max - (quantity ?? 0);
+  const quantityReachedMax = currentRemainingQuantity == 0 ? true : false;
+
+  useEffect(() => {
+    if (!istBtnDisabled) {
+      return;
+    }
+    setIsBtnDisabled(true);
+    const debounce = setTimeout(() => {
+      setIsBtnDisabled(false);
+    }, 300);
+
+    return () => clearTimeout(debounce);
+  }, [istBtnDisabled]);
+
+  const addToCartHandler = () => {
+    dispatch(addToCart(id));
+    setIsBtnDisabled(true);
+  };
   return (
     <div className={product}>
       <div className={productImg}>
         <img src={img} alt={title} />
       </div>
       <h2 title={title}>{title}</h2>
-      <h3>{price} EGP</h3>
-      <Button variant="info" style={{ color: "white" }}>
-        Add to cart
+      <h3>{price.toFixed(2)} EGP</h3>
+      <p className={maximumNotice}>
+        {quantityReachedMax
+          ? "You've reached to the limit"
+          : `Remaining: ${currentRemainingQuantity} item(s)`}
+      </p>
+      <Button
+        variant="info"
+        style={{ color: "white" }}
+        onClick={addToCartHandler}
+        disabled={istBtnDisabled || quantityReachedMax}
+      >
+        {istBtnDisabled ? (
+          <>
+            <Spinner animation="border" size="sm" /> Loading...
+          </>
+        ) : (
+          "Add to cart"
+        )}
       </Button>
     </div>
   );

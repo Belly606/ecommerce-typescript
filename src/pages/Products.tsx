@@ -5,15 +5,20 @@ import {
   actGetProductsByCatPrefix,
   productsCleanUp,
 } from "@store/products/productsSlice";
-import { GridList } from "@components/common";
+import { GridList, Heading } from "@components/common";
 import { Product } from "@components/eCommerce";
 import { Loading } from "@components/feedback";
-import { Container } from "react-bootstrap";
 
 const Products = () => {
-  const params = useParams();
   const dispatch = useAppDispatch();
+  const params = useParams();
   const { loading, error, records } = useAppSelector((state) => state.products);
+
+  const cartItems = useAppSelector((state) => state.cart.items);
+  const productFullInfo = records.map((el) => ({
+    ...el,
+    quantity: cartItems[el.id] || 0,
+  }));
 
   useEffect(() => {
     dispatch(actGetProductsByCatPrefix(params.prefix as string));
@@ -24,14 +29,17 @@ const Products = () => {
   }, [dispatch, params]);
 
   return (
-    <Container>
+    <>
+      <Heading>
+        <span className="text-capitalize">{params.prefix}</span> Products
+      </Heading>
       <Loading status={loading} error={error}>
         <GridList
-          records={records}
+          records={productFullInfo}
           renderItem={(record) => <Product {...record} />}
         />
       </Loading>
-    </Container>
+    </>
   );
 };
 

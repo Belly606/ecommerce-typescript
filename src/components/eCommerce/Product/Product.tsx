@@ -1,16 +1,27 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "@store/hooks";
+import { actLikeToggle } from "@store/wishlist/wishlistSlice";
 import { addToCart } from "@store/cart/cartSlice";
 import { Button, Spinner } from "react-bootstrap";
+import Like from "@assets/svg/like.svg?react";
+import LikeFill from "@assets/svg/like-fill.svg?react";
 import { TProduct } from "@customTypes/product";
 
 import styles from "./styles.module.css";
-const { product, productImg, maximumNotice } = styles;
+const { product, productImg, maximumNotice, wishlistBtn } = styles;
 
-const Product = ({ id, title, img, price, quantity, max }: TProduct) => {
+const Product = ({
+  id,
+  title,
+  img,
+  price,
+  quantity,
+  max,
+  isLiked,
+}: TProduct) => {
   const dispatch = useAppDispatch();
   const [istBtnDisabled, setIsBtnDisabled] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const currentRemainingQuantity = max - (quantity ?? 0);
   const quantityReachedMax = currentRemainingQuantity == 0 ? true : false;
 
@@ -30,8 +41,27 @@ const Product = ({ id, title, img, price, quantity, max }: TProduct) => {
     dispatch(addToCart(id));
     setIsBtnDisabled(true);
   };
+
+  const likeToggleHandler = () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    dispatch(actLikeToggle(id))
+      .unwrap()
+      .then(() => setIsLoading(false))
+      .catch(() => setIsLoading(false));
+  };
+
   return (
     <div className={product}>
+      <div className={wishlistBtn} onClick={likeToggleHandler}>
+        {isLoading ? (
+          <Spinner animation="border" size="sm" variant="danger" />
+        ) : isLiked ? (
+          <LikeFill />
+        ) : (
+          <Like />
+        )}
+      </div>
       <div className={productImg}>
         <img src={img} alt={title} />
       </div>

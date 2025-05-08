@@ -4,6 +4,7 @@ import {
   actGetProductsByItems,
   cartItemChangeQuantity,
   cartItemRemove,
+  productsFullInfoCleanUp,
 } from "@store/cart/cartSlice";
 import { Heading } from "@components/common";
 import { CartItemList, CartSubtotalPrice } from "@components/eCommerce";
@@ -17,6 +18,9 @@ const Cart = () => {
 
   useEffect(() => {
     dispatch(actGetProductsByItems());
+    return () => {
+      dispatch(productsFullInfoCleanUp());
+    };
   }, [dispatch]);
 
   const products = productsFullInfo.map((el) => ({

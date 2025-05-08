@@ -10,7 +10,7 @@ const actGetWishlist = createAsyncThunk(
     const { rejectWithValue, fulfillWithValue } = thunkAPI;
 
     try {
-      const userWishlist = await axios.get<{ productsId: number }[]>(
+      const userWishlist = await axios.get<{ productId: number }[]>(
         "/wishlist?userId=1"
       );
 
@@ -19,7 +19,7 @@ const actGetWishlist = createAsyncThunk(
       }
 
       const concatenatedIds = userWishlist.data
-        .map((el) => `/id=${el.productsId}`)
+        .map((el) => `id=${el.productId}`)
         .join("&");
 
       const response = await axios.get<TResponse>(

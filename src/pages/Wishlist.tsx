@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
-import { actGetWishlist } from "@store/wishlist/wishlistSlice";
+import {
+  actGetWishlist,
+  productsFullInfoCleanUp,
+} from "@store/wishlist/wishlistSlice";
 import { GridList, Heading } from "@components/common";
 import { Product } from "@components/eCommerce";
 import { Loading } from "@components/feedback";
@@ -19,6 +22,9 @@ const Wishlist = () => {
   }));
   useEffect(() => {
     dispatch(actGetWishlist());
+    return () => {
+      dispatch(productsFullInfoCleanUp());
+    };
   }, [dispatch]);
   return (
     <>

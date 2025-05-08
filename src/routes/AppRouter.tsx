@@ -5,6 +5,7 @@ import { MainLayout } from "@layouts/index";
 
 // Pages
 import Home from "@pages/Home";
+import Cart from "@pages/Cart";
 import AboutUs from "@pages/AboutUs";
 import Categories from "@pages/Categories";
 import Product from "@pages/Products";
@@ -20,6 +21,7 @@ const AppRouter = () => {
       errorElement: <Error />,
       children: [
         { index: true, element: <Home /> },
+        { path: "/cart", element: <Cart /> },
         { path: "/about-us", element: <AboutUs /> },
         { path: "/categories", element: <Categories /> },
         {

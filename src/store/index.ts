@@ -16,15 +16,15 @@ import cart from "./cart/cartSlice";
 import wishlist from "./wishlist/wishlistSlice";
 
 const cartPersistConfig = {
-  key: "root",
+  key: "cart",
   storage,
   whitelist: ["items"],
 };
 
 const wishlistPersistConfig = {
-  key: "root",
+  key: "wishlist",
   storage,
-  whitelist: ["items"],
+  whitelist: ["itemsId"],
 };
 
 const rootReducer = combineReducers({

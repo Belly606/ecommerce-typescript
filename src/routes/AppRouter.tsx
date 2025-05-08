@@ -5,6 +5,7 @@ import { MainLayout } from "@layouts/index";
 
 // Pages
 import Home from "@pages/Home";
+import Wishlist from "@pages/Wishlist";
 import Cart from "@pages/Cart";
 import AboutUs from "@pages/AboutUs";
 import Categories from "@pages/Categories";
@@ -21,6 +22,7 @@ const AppRouter = () => {
       errorElement: <Error />,
       children: [
         { index: true, element: <Home /> },
+        { path: "/wishlist", element: <Wishlist /> },
         { path: "/cart", element: <Cart /> },
         { path: "/about-us", element: <AboutUs /> },
         { path: "/categories", element: <Categories /> },

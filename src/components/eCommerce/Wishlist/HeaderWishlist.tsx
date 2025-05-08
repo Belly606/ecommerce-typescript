@@ -29,7 +29,7 @@ const HeaderWishlist = () => {
     };
   }, [totalQuantity]);
   return (
-    <div className={container} onClick={() => navigate("/cart")}>
+    <div className={container} onClick={() => navigate("/wishlist")}>
       <div className={iconWrapper}>
         <Logo title="Basket Icon" />
         {totalQuantity > 0 && (

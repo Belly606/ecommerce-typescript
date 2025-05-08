@@ -21,7 +21,7 @@ const Product = ({
 }: TProduct) => {
   const dispatch = useAppDispatch();
   const [istBtnDisabled, setIsBtnDisabled] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const currentRemainingQuantity = max - (quantity ?? 0);
   const quantityReachedMax = currentRemainingQuantity == 0 ? true : false;
 
@@ -43,13 +43,23 @@ const Product = ({
   };
 
   const likeToggleHandler = () => {
-    dispatch(actLikeToggle(id));
+    setIsLoading(true);
+    dispatch(actLikeToggle(id))
+      .unwrap()
+      .then(() => setIsLoading(false))
+      .catch(() => setIsLoading(false));
   };
 
   return (
     <div className={product}>
       <div className={wishlistBtn} onClick={likeToggleHandler}>
-        {isLiked ? <LikeFill /> : <Like />}
+        {isLoading ? (
+          <Spinner animation="border" size="sm" variant="danger" />
+        ) : isLiked ? (
+          <LikeFill />
+        ) : (
+          <Like />
+        )}
       </div>
       <div className={productImg}>
         <img src={img} alt={title} />

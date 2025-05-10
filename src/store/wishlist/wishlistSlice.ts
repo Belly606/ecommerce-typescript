@@ -1,8 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import actGetWishlist from "./act/actGetWishlist";
 import actLikeToggle from "./act/actLikeToggle";
-import { TLoading } from "@customTypes/shared";
-import { TProduct } from "@customTypes/product";
+import { TLoading, TProduct } from "@types";
 
 type TWishlistState = {
   itemsId: number[];

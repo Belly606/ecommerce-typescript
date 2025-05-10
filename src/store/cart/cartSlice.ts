@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getCartTotalQuantitySelector } from "./selectors/index";
 import actGetProductsByItems from "./act/actGetProductsByItems";
-import { TProduct } from "@customTypes/product";
-import { TLoading } from "@customTypes/shared";
+import { TProduct } from "@types";
+import { TLoading } from "@types";
 
 type TCartState = {
   items: { [key: number]: number };

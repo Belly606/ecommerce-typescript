@@ -33,9 +33,12 @@ const Products = () => {
 
   return (
     <>
-      <Heading>
-        <span className="text-capitalize">{params.prefix}</span> Products
-      </Heading>
+      <Heading
+        title={`${
+          (params.prefix?.charAt(0).toUpperCase() as string) +
+          params.prefix?.slice(1)
+        } Products`}
+      />
       <Loading status={loading} error={error}>
         <GridList
           records={productFullInfo}

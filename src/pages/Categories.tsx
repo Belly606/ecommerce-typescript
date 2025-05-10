@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
-import { actGetCategories } from "@store/categories/categoriesSlice";
+import {
+  actGetCategories,
+  categoriesRecordsCleanUp,
+} from "@store/categories/categoriesSlice";
 import { GridList, Heading } from "@components/common";
 import Category from "@components/eCommerce/Category/Category";
 import { Loading } from "@components/feedback";
@@ -11,10 +14,12 @@ const Categories = () => {
     (state) => state.categories
   );
   useEffect(() => {
-    if (!records.length) {
-      dispatch(actGetCategories());
-    }
-  }, [dispatch, records]);
+    dispatch(actGetCategories());
+
+    return () => {
+      dispatch(categoriesRecordsCleanUp());
+    };
+  }, [dispatch]);
 
   return (
     <>

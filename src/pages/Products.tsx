@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@store/hooks";
 import {
   actGetProductsByCatPrefix,
-  productsCleanUp,
+  productsRecordsCleanUp,
 } from "@store/products/productsSlice";
 import { GridList, Heading } from "@components/common";
 import { Product } from "@components/eCommerce";
@@ -27,7 +27,7 @@ const Products = () => {
     dispatch(actGetProductsByCatPrefix(params.prefix as string));
 
     return () => {
-      dispatch(productsCleanUp());
+      dispatch(productsRecordsCleanUp());
     };
   }, [dispatch, params]);
 

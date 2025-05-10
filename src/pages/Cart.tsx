@@ -4,7 +4,7 @@ import {
   actGetProductsByItems,
   cartItemChangeQuantity,
   cartItemRemove,
-  productsFullInfoCleanUp,
+  cartProductsFullInfoCleanUp,
 } from "@store/cart/cartSlice";
 import { Heading } from "@components/common";
 import { CartItemList, CartSubtotalPrice } from "@components/eCommerce";
@@ -19,7 +19,7 @@ const Cart = () => {
   useEffect(() => {
     dispatch(actGetProductsByItems());
     return () => {
-      dispatch(productsFullInfoCleanUp());
+      dispatch(cartProductsFullInfoCleanUp());
     };
   }, [dispatch]);
 

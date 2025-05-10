@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { useAppDispatch } from "@store/hooks";
 import { actLikeToggle } from "@store/wishlist/wishlistSlice";
 import { addToCart } from "@store/cart/cartSlice";
@@ -10,84 +10,78 @@ import { TProduct } from "@customTypes/product";
 import styles from "./styles.module.css";
 const { product, productImg, maximumNotice, wishlistBtn } = styles;
 
-const Product = ({
-  id,
-  title,
-  img,
-  price,
-  quantity,
-  max,
-  isLiked,
-}: TProduct) => {
-  const dispatch = useAppDispatch();
-  const [istBtnDisabled, setIsBtnDisabled] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const currentRemainingQuantity = max - (quantity ?? 0);
-  const quantityReachedMax = currentRemainingQuantity == 0 ? true : false;
+const Product = memo(
+  ({ id, title, img, price, quantity, max, isLiked }: TProduct) => {
+    const dispatch = useAppDispatch();
+    const [istBtnDisabled, setIsBtnDisabled] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const currentRemainingQuantity = max - (quantity ?? 0);
+    const quantityReachedMax = currentRemainingQuantity == 0 ? true : false;
 
-  useEffect(() => {
-    if (!istBtnDisabled) {
-      return;
-    }
-    setIsBtnDisabled(true);
-    const debounce = setTimeout(() => {
-      setIsBtnDisabled(false);
-    }, 300);
+    useEffect(() => {
+      if (!istBtnDisabled) {
+        return;
+      }
+      setIsBtnDisabled(true);
+      const debounce = setTimeout(() => {
+        setIsBtnDisabled(false);
+      }, 300);
 
-    return () => clearTimeout(debounce);
-  }, [istBtnDisabled]);
+      return () => clearTimeout(debounce);
+    }, [istBtnDisabled]);
 
-  const addToCartHandler = () => {
-    dispatch(addToCart(id));
-    setIsBtnDisabled(true);
-  };
+    const addToCartHandler = () => {
+      dispatch(addToCart(id));
+      setIsBtnDisabled(true);
+    };
 
-  const likeToggleHandler = () => {
-    if (isLoading) return;
-    setIsLoading(true);
-    dispatch(actLikeToggle(id))
-      .unwrap()
-      .then(() => setIsLoading(false))
-      .catch(() => setIsLoading(false));
-  };
+    const likeToggleHandler = () => {
+      if (isLoading) return;
+      setIsLoading(true);
+      dispatch(actLikeToggle(id))
+        .unwrap()
+        .then(() => setIsLoading(false))
+        .catch(() => setIsLoading(false));
+    };
 
-  return (
-    <div className={product}>
-      <div className={wishlistBtn} onClick={likeToggleHandler}>
-        {isLoading ? (
-          <Spinner animation="border" size="sm" variant="danger" />
-        ) : isLiked ? (
-          <LikeFill />
-        ) : (
-          <Like />
-        )}
+    return (
+      <div className={product}>
+        <div className={wishlistBtn} onClick={likeToggleHandler}>
+          {isLoading ? (
+            <Spinner animation="border" size="sm" variant="danger" />
+          ) : isLiked ? (
+            <LikeFill />
+          ) : (
+            <Like />
+          )}
+        </div>
+        <div className={productImg}>
+          <img src={img} alt={title} />
+        </div>
+        <h2 title={title}>{title}</h2>
+        <h3>{price.toFixed(2)} EGP</h3>
+        <p className={maximumNotice}>
+          {quantityReachedMax
+            ? "You've reached to the limit"
+            : `Remaining: ${currentRemainingQuantity} item(s)`}
+        </p>
+        <Button
+          variant="info"
+          style={{ color: "white" }}
+          onClick={addToCartHandler}
+          disabled={istBtnDisabled || quantityReachedMax}
+        >
+          {istBtnDisabled ? (
+            <>
+              <Spinner animation="border" size="sm" /> Loading...
+            </>
+          ) : (
+            "Add to cart"
+          )}
+        </Button>
       </div>
-      <div className={productImg}>
-        <img src={img} alt={title} />
-      </div>
-      <h2 title={title}>{title}</h2>
-      <h3>{price.toFixed(2)} EGP</h3>
-      <p className={maximumNotice}>
-        {quantityReachedMax
-          ? "You've reached to the limit"
-          : `Remaining: ${currentRemainingQuantity} item(s)`}
-      </p>
-      <Button
-        variant="info"
-        style={{ color: "white" }}
-        onClick={addToCartHandler}
-        disabled={istBtnDisabled || quantityReachedMax}
-      >
-        {istBtnDisabled ? (
-          <>
-            <Spinner animation="border" size="sm" /> Loading...
-          </>
-        ) : (
-          "Add to cart"
-        )}
-      </Button>
-    </div>
-  );
-};
+    );
+  }
+);
 
 export default Product;

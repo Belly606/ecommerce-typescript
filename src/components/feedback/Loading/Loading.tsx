@@ -1,5 +1,5 @@
+import CategorySkeleton from "../skeletons/CategorySkeleton/CategorySkeleton";
 import { TLoading } from "@types";
-import React from "react";
 
 type LoadingProps = {
   status: TLoading;
@@ -9,7 +9,7 @@ type LoadingProps = {
 
 const Loading = ({ status, error, children }: LoadingProps) => {
   if (status === "pending") {
-    <p>Loading Please Wait...</p>;
+    return <CategorySkeleton />;
   }
 
   if (status === "failed") {

@@ -8,22 +8,26 @@ const lottieFilesMap = {
   notFound,
   error,
   loading,
-  empty
-}
+  empty,
+};
 
 type LottieHandlerProps = {
-  type: keyof typeof lottieFilesMap,
-  message?: string
-}
+  type: keyof typeof lottieFilesMap;
+  message?: string;
+};
 
-const LottieHandler = ({type, message}: LottieHandlerProps) => {
-  const lottie = lottieFilesMap[type]
+const LottieHandler = ({ type, message }: LottieHandlerProps) => {
+  const lottie = lottieFilesMap[type];
+  const messageStyle =
+    type === "error"
+      ? { color: "red", fontSize: "19px" }
+      : { marginTop: "30px", fontSize: "19px" };
   return (
     <div className="d-flex flex-column align-items-center mt-5">
-      <Lottie animationData={lottie} style={{width: "400px"}}/>
-      {message && <h3 style={{marginTop: "30px", fontSize: "19px"}}>{message}</h3>}
+      <Lottie animationData={lottie} style={{ width: "400px" }} />
+      {message && <h3 style={messageStyle}>{message}</h3>}
     </div>
-  )
-}
+  );
+};
 
-export default LottieHandler
+export default LottieHandler;

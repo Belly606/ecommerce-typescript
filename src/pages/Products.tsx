@@ -13,8 +13,9 @@ const Products = () => {
           paramsPrefix?.slice(1)
         } Products`}
       />
-      <Loading status={loading} error={error}>
+      <Loading status={loading} error={error} type="product">
         <GridList
+          emptyMessage="There are no products"
           records={productFullInfo}
           renderItem={(record) => <Product {...record} />}
         />

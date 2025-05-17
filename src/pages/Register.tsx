@@ -1,41 +1,20 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { registerSchema, registerType } from "@validations/registerSchema";
 import { Heading } from "@components/common";
 import { Form, Button, Row, Col } from "react-bootstrap";
-
-const signUpSchema = z
-  .object({
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
-    email: z.string().min(1, "Email is required").email(),
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters")
-      .regex(
-        /.*[!@#$%^&*()_+{}|[\]\\:";'<>?,./].*/,
-        "Password should contain at least 1 special character"
-      ),
-    confirmPassword: z.string().min(1, "Confirm password is required"),
-  })
-  .refine((input) => input.password === input.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
-
-type TFormInputs = z.infer<typeof signUpSchema>;
 
 const Register = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TFormInputs>({
+  } = useForm<registerType>({
     mode: "onBlur",
-    resolver: zodResolver(signUpSchema),
+    resolver: zodResolver(registerSchema),
   });
 
-  const submitForm: SubmitHandler<TFormInputs> = (data) => {
+  const submitForm: SubmitHandler<registerType> = (data) => {
     console.log(data);
   };
 

@@ -39,7 +39,7 @@ const Header = () => {
                 Login
               </Nav.Link>
               <Nav.Link as={NavLink} to="register">
-                Signin
+                Register
               </Nav.Link>
             </Nav>
           </Navbar.Collapse>

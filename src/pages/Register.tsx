@@ -1,6 +1,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, registerType } from "@validations/registerSchema";
+import useCheckEmailAvailability from "@hooks/useCheckEmailAvailability";
 import { Heading } from "@components/common";
 import { Input } from "@components/forms";
 import { Form, Button, Row, Col } from "react-bootstrap";
@@ -9,14 +10,38 @@ const Register = () => {
   const {
     register,
     handleSubmit,
+    trigger,
+    getFieldState,
     formState: { errors },
   } = useForm<registerType>({
     mode: "onBlur",
     resolver: zodResolver(registerSchema),
   });
 
+  const {
+    enteredEmail,
+    emailAvailabilityStatus,
+    checkEmailAvailability,
+    resetCheckEmailAvailability,
+  } = useCheckEmailAvailability();
+
   const submitForm: SubmitHandler<registerType> = (data) => {
     console.log(data);
+  };
+
+  const emailOnBlurHandler = async (e: React.FocusEvent<HTMLInputElement>) => {
+    await trigger("email");
+    const value = e.target.value;
+    const { isDirty, invalid } = getFieldState("email");
+
+    if (isDirty && !invalid && enteredEmail !== value) {
+      // Checking
+      checkEmailAvailability(value);
+    }
+
+    if (isDirty && invalid && enteredEmail) {
+      resetCheckEmailAvailability();
+    }
   };
 
   return (
@@ -43,8 +68,29 @@ const Register = () => {
               label="Email Address"
               name="email"
               register={register}
-              error={errors.email?.message as string}
-              formText="We'll never share your email with anyone else."
+              onBlur={emailOnBlurHandler}
+              error={
+                errors.email?.message
+                  ? errors.email?.message
+                  : emailAvailabilityStatus === "notAvailable"
+                  ? "This email is already in use."
+                  : emailAvailabilityStatus === "failed"
+                  ? "Error from the server."
+                  : ""
+              }
+              formText={
+                emailAvailabilityStatus === "checking"
+                  ? "We're currently checking the availability of this email address. Please wait a moment."
+                  : !emailAvailabilityStatus
+                  ? "We'll never share your email with anyone else."
+                  : ""
+              }
+              success={
+                emailAvailabilityStatus === "available"
+                  ? "This email is available for use."
+                  : ""
+              }
+              disabled={emailAvailabilityStatus === "checking" ? true : false}
             />
 
             <Input
@@ -63,7 +109,12 @@ const Register = () => {
               error={errors.confirmPassword?.message as string}
             />
 
-            <Button variant="info" type="submit" style={{ color: "white" }}>
+            <Button
+              variant="info"
+              type="submit"
+              style={{ color: "white" }}
+              disabled={emailAvailabilityStatus === "checking" ? true : false}
+            >
               Submit
             </Button>
           </Form>

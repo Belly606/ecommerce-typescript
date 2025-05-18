@@ -6,8 +6,11 @@ type InputType<TFieldValue extends FieldValues> = {
   name: Path<TFieldValue>;
   type?: string;
   register: UseFormRegister<TFieldValue>;
-  error: string;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  error?: string;
   formText?: string;
+  success?: string;
+  disabled?: boolean;
 };
 
 const Input = <TFieldValue extends FieldValues>({
@@ -15,9 +18,21 @@ const Input = <TFieldValue extends FieldValues>({
   name,
   type = "text",
   register,
+  onBlur,
   error,
   formText,
+  success,
+  disabled,
 }: InputType<TFieldValue>) => {
+  const onBlurHandler = (e: React.FocusEvent<HTMLInputElement>) => {
+    if (onBlur) {
+      onBlur(e);
+      register(name).onBlur(e);
+    } else {
+      register(name).onBlur(e);
+    }
+  };
+
   return (
     <Form.Group className="mb-3">
       <Form.Label>{label}</Form.Label>
@@ -25,12 +40,14 @@ const Input = <TFieldValue extends FieldValues>({
         type={type}
         {...register(name)}
         isInvalid={error ? true : false}
+        isValid={success ? true : false}
+        onBlur={onBlurHandler}
+        disabled={disabled}
       />
-      <Form.Text className="text-muted">
-        {/* We'll never share your email with anyone else. */}
-        {formText}
-      </Form.Text>
       <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
+      <Form.Control.Feedback type="valid">{success}</Form.Control.Feedback>
+      {formText && <Form.Text muted>{formText}</Form.Text>}
+      {success}
     </Form.Group>
   );
 };

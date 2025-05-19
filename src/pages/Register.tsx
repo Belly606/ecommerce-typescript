@@ -1,12 +1,18 @@
+import { useAppDispatch, useAppSelector } from "@store/hooks";
+import { actAuthRegister } from "@store/auth/authSlice";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, registerType } from "@validations/registerSchema";
 import useCheckEmailAvailability from "@hooks/useCheckEmailAvailability";
 import { Heading } from "@components/common";
 import { Input } from "@components/forms";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button, Row, Col, Spinner } from "react-bootstrap";
 
 const Register = () => {
+  const dispatch = useAppDispatch();
+
+  const { loading, error } = useAppSelector((state) => state.auth);
+
   const {
     register,
     handleSubmit,
@@ -26,7 +32,8 @@ const Register = () => {
   } = useCheckEmailAvailability();
 
   const submitForm: SubmitHandler<registerType> = (data) => {
-    console.log(data);
+    const { firstName, lastName, email, password } = data;
+    dispatch(actAuthRegister({ firstName, lastName, email, password }));
   };
 
   const emailOnBlurHandler = async (e: React.FocusEvent<HTMLInputElement>) => {
@@ -90,7 +97,11 @@ const Register = () => {
                   ? "This email is available for use."
                   : ""
               }
-              disabled={emailAvailabilityStatus === "checking" ? true : false}
+              disabled={
+                emailAvailabilityStatus === "checking" || loading === "pending"
+                  ? true
+                  : false
+              }
             />
 
             <Input
@@ -113,10 +124,21 @@ const Register = () => {
               variant="info"
               type="submit"
               style={{ color: "white" }}
-              disabled={emailAvailabilityStatus === "checking" ? true : false}
+              disabled={
+                emailAvailabilityStatus === "checking" || loading === "pending"
+                  ? true
+                  : false
+              }
             >
-              Submit
+              {loading === "pending" ? (
+                <>
+                  <Spinner animation="border" size="sm" /> Loading...
+                </>
+              ) : (
+                "Submit"
+              )}
             </Button>
+            {error && <p className="text-danger">{error}</p>}
           </Form>
         </Col>
       </Row>

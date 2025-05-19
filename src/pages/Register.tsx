@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
-import { actAuthRegister } from "@store/auth/authSlice";
+import { actAuthRegister, resetUI } from "@store/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -57,6 +58,12 @@ const Register = () => {
       resetCheckEmailAvailability();
     }
   };
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetUI());
+    };
+  }, [dispatch]);
 
   return (
     <>
@@ -145,7 +152,7 @@ const Register = () => {
                 "Submit"
               )}
             </Button>
-            {error && <p className="text-danger">{error}</p>}
+            {error && <p className="text-danger mt-2">{error}</p>}
           </Form>
         </Col>
       </Row>

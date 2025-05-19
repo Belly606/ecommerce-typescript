@@ -1,4 +1,6 @@
-import { useSearchParams } from "react-router-dom";
+import { useAppDispatch } from "@store/hooks";
+import { actAuthLogin } from "@store/auth/authSlice";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, loginType } from "@validations/loginSchema";
@@ -7,6 +9,10 @@ import { Input } from "@components/forms";
 import { Form, Button, Row, Col, Alert } from "react-bootstrap";
 
 const Login = () => {
+  const dispatch = useAppDispatch();
+
+  const navigate = useNavigate();
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const {
@@ -19,7 +25,9 @@ const Login = () => {
   });
 
   const submitForm: SubmitHandler<loginType> = (data) => {
-    console.log(data);
+    dispatch(actAuthLogin(data))
+      .unwrap()
+      .then(() => navigate("/"));
   };
 
   return (

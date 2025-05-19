@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
 import { actAuthLogin, resetUI } from "@store/auth/authSlice";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate, Navigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, loginType } from "@validations/loginSchema";
@@ -12,7 +12,7 @@ import { Form, Button, Row, Col, Alert, Spinner } from "react-bootstrap";
 const Login = () => {
   const dispatch = useAppDispatch();
 
-  const { loading, error } = useAppSelector((state) => state.auth);
+  const { loading, error, accessToken } = useAppSelector((state) => state.auth);
 
   const navigate = useNavigate();
 
@@ -43,11 +43,20 @@ const Login = () => {
     };
   }, [dispatch]);
 
+  if (accessToken) {
+    return <Navigate to="/" />;
+  }
+
   return (
     <>
       <Heading title="Login" />
       <Row>
         <Col md={{ span: 6, offset: 3 }}>
+          {searchParams.get("message") === "login_required" && (
+            <Alert variant="warning">
+              You need to login to view this content
+            </Alert>
+          )}
           {searchParams.get("message") === "account_created" && (
             <Alert variant="success">
               Your account successfully created, please login

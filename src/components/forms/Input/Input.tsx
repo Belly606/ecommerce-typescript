@@ -47,7 +47,6 @@ const Input = <TFieldValue extends FieldValues>({
       <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
       <Form.Control.Feedback type="valid">{success}</Form.Control.Feedback>
       {formText && <Form.Text muted>{formText}</Form.Text>}
-      {success}
     </Form.Group>
   );
 };

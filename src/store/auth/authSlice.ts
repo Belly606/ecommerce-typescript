@@ -25,7 +25,12 @@ const initialState: TAuthState = {
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    resetUI: (state) => {
+      state.loading = "idle";
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     // Register
     builder.addCase(actAuthRegister.pending, (state) => {
@@ -61,4 +66,5 @@ const authSlice = createSlice({
 });
 
 export { actAuthRegister, actAuthLogin };
+export const { resetUI } = authSlice.actions;
 export default authSlice.reducer;

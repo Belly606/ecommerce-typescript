@@ -1,15 +1,18 @@
-import { useAppDispatch } from "@store/hooks";
-import { actAuthLogin } from "@store/auth/authSlice";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@store/hooks";
+import { actAuthLogin, resetUI } from "@store/auth/authSlice";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, loginType } from "@validations/loginSchema";
 import { Heading } from "@components/common";
 import { Input } from "@components/forms";
-import { Form, Button, Row, Col, Alert } from "react-bootstrap";
+import { Form, Button, Row, Col, Alert, Spinner } from "react-bootstrap";
 
 const Login = () => {
   const dispatch = useAppDispatch();
+
+  const { loading, error } = useAppSelector((state) => state.auth);
 
   const navigate = useNavigate();
 
@@ -25,10 +28,20 @@ const Login = () => {
   });
 
   const submitForm: SubmitHandler<loginType> = (data) => {
+    if (searchParams.get("message")) {
+      setSearchParams("");
+    }
+
     dispatch(actAuthLogin(data))
       .unwrap()
       .then(() => navigate("/"));
   };
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetUI());
+    };
+  }, [dispatch]);
 
   return (
     <>
@@ -57,8 +70,15 @@ const Login = () => {
             />
 
             <Button variant="info" type="submit" style={{ color: "white" }}>
-              Submit
+              {loading === "pending" ? (
+                <>
+                  <Spinner animation="border" size="sm" /> Loading...
+                </>
+              ) : (
+                "Submit"
+              )}
             </Button>
+            {error && <p className="text-danger mt-2">{error}</p>}
           </Form>
         </Col>
       </Row>

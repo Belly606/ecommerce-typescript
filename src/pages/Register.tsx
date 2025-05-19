@@ -1,5 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@store/hooks";
 import { actAuthRegister } from "@store/auth/authSlice";
+import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, registerType } from "@validations/registerSchema";
@@ -10,6 +11,8 @@ import { Form, Button, Row, Col, Spinner } from "react-bootstrap";
 
 const Register = () => {
   const dispatch = useAppDispatch();
+
+  const navigate = useNavigate();
 
   const { loading, error } = useAppSelector((state) => state.auth);
 
@@ -33,7 +36,11 @@ const Register = () => {
 
   const submitForm: SubmitHandler<registerType> = (data) => {
     const { firstName, lastName, email, password } = data;
-    dispatch(actAuthRegister({ firstName, lastName, email, password }));
+    dispatch(actAuthRegister({ firstName, lastName, email, password }))
+      .unwrap()
+      .then(() => {
+        navigate("/login?message=account_created");
+      });
   };
 
   const emailOnBlurHandler = async (e: React.FocusEvent<HTMLInputElement>) => {

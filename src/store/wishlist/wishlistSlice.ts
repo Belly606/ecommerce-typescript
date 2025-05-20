@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import actGetWishlist from "./act/actGetWishlist";
 import actLikeToggle from "./act/actLikeToggle";
+import { authLogout } from "@store/auth/authSlice";
 import { isString, TLoading, TProduct } from "@types";
 
 type TWishlistState = {
@@ -44,20 +45,31 @@ const wishlistSlice = createSlice({
         state.error = action.payload;
       }
     });
-    // Get Wishlist
+
+    // Get Wishlist Items
     builder.addCase(actGetWishlist.pending, (state) => {
       state.error = null;
       state.loading = "pending";
     });
     builder.addCase(actGetWishlist.fulfilled, (state, action) => {
       state.loading = "succeeded";
-      state.productsFullInfo = action.payload;
+      if (action.payload.dataType === "productsFullInfo") {
+        state.productsFullInfo = action.payload.data as TProduct[];
+      } else if (action.payload.dataType === "ProductIds") {
+        state.itemsId = action.payload.data as number[];
+      }
     });
     builder.addCase(actGetWishlist.rejected, (state, action) => {
       state.loading = "failed";
       if (isString(action.payload)) {
         state.error = action.payload;
       }
+    });
+
+    // When Logout Clean Up
+    builder.addCase(authLogout, (state) => {
+      state.itemsId = [];
+      state.productsFullInfo = [];
     });
   },
 });

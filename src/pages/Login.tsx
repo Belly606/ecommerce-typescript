@@ -1,47 +1,20 @@
-import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "@store/hooks";
-import { actAuthLogin, resetUI } from "@store/auth/authSlice";
-import { useSearchParams, useNavigate, Navigate } from "react-router-dom";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, loginType } from "@validations/loginSchema";
+import useLogin from "@hooks/useLogin";
+import { Navigate } from "react-router-dom";
 import { Heading } from "@components/common";
 import { Input } from "@components/forms";
 import { Form, Button, Row, Col, Alert, Spinner } from "react-bootstrap";
 
 const Login = () => {
-  const dispatch = useAppDispatch();
-
-  const { loading, error, accessToken } = useAppSelector((state) => state.auth);
-
-  const navigate = useNavigate();
-
-  const [searchParams, setSearchParams] = useSearchParams();
-
   const {
+    loading,
+    error,
+    accessToken,
+    searchParams,
+    errors: formErrors,
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<loginType>({
-    mode: "onBlur",
-    resolver: zodResolver(loginSchema),
-  });
-
-  const submitForm: SubmitHandler<loginType> = (data) => {
-    if (searchParams.get("message")) {
-      setSearchParams("");
-    }
-
-    dispatch(actAuthLogin(data))
-      .unwrap()
-      .then(() => navigate("/"));
-  };
-
-  useEffect(() => {
-    return () => {
-      dispatch(resetUI());
-    };
-  }, [dispatch]);
+    submitForm,
+  } = useLogin();
 
   if (accessToken) {
     return <Navigate to="/" />;
@@ -67,7 +40,7 @@ const Login = () => {
               label="Email Address"
               name="email"
               register={register}
-              error={errors.email?.message as string}
+              error={formErrors.email?.message as string}
             />
 
             <Input
@@ -75,7 +48,7 @@ const Login = () => {
               name="password"
               type="password"
               register={register}
-              error={errors.password?.message as string}
+              error={formErrors.password?.message as string}
             />
 
             <Button variant="info" type="submit" style={{ color: "white" }}>

@@ -2,7 +2,7 @@ import { useEffect, useState, memo } from "react";
 import { useAppDispatch } from "@store/hooks";
 import { actLikeToggle } from "@store/wishlist/wishlistSlice";
 import { addToCart } from "@store/cart/cartSlice";
-import { Button, Spinner } from "react-bootstrap";
+import { Button, Modal, Spinner } from "react-bootstrap";
 import Like from "@assets/svg/like.svg?react";
 import LikeFill from "@assets/svg/like-fill.svg?react";
 import { TProduct } from "@types";
@@ -11,10 +11,22 @@ import styles from "./styles.module.css";
 const { product, productImg, maximumNotice, wishlistBtn } = styles;
 
 const Product = memo(
-  ({ id, title, img, price, quantity, max, isLiked }: TProduct) => {
+  ({
+    id,
+    title,
+    img,
+    price,
+    quantity,
+    max,
+    isLiked,
+    isAuthenticated,
+  }: TProduct) => {
     const dispatch = useAppDispatch();
+
+    const [showModal, setShowModal] = useState(false);
     const [istBtnDisabled, setIsBtnDisabled] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
     const currentRemainingQuantity = max - (quantity ?? 0);
     const quantityReachedMax = currentRemainingQuantity == 0 ? true : false;
 
@@ -36,50 +48,66 @@ const Product = memo(
     };
 
     const likeToggleHandler = () => {
-      if (isLoading) return;
-      setIsLoading(true);
-      dispatch(actLikeToggle(id))
-        .unwrap()
-        .then(() => setIsLoading(false))
-        .catch(() => setIsLoading(false));
+      if (isAuthenticated) {
+        if (!isLoading) {
+          setIsLoading(true);
+          dispatch(actLikeToggle(id))
+            .unwrap()
+            .then(() => setIsLoading(false))
+            .catch(() => setIsLoading(false));
+        }
+      } else {
+        setShowModal(true);
+      }
     };
 
     return (
-      <div className={product}>
-        <div className={wishlistBtn} onClick={likeToggleHandler}>
-          {isLoading ? (
-            <Spinner animation="border" size="sm" variant="danger" />
-          ) : isLiked ? (
-            <LikeFill />
-          ) : (
-            <Like />
-          )}
+      <>
+        <Modal show={showModal} onHide={() => setShowModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Login Required</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            You need to login first to add this item to your wishlist.
+          </Modal.Body>
+        </Modal>
+
+        <div className={product}>
+          <div className={wishlistBtn} onClick={likeToggleHandler}>
+            {isLoading ? (
+              <Spinner animation="border" size="sm" variant="danger" />
+            ) : isLiked ? (
+              <LikeFill />
+            ) : (
+              <Like />
+            )}
+          </div>
+          <div className={productImg}>
+            <img src={img} alt={title} />
+          </div>
+          <h2 title={title}>{title}</h2>
+          <h3>{price.toFixed(2)} EGP</h3>
+          <p className={maximumNotice}>
+            {quantityReachedMax
+              ? "You've reached to the limit"
+              : `Remaining: ${currentRemainingQuantity} item(s)`}
+          </p>
+          <Button
+            variant="info"
+            style={{ color: "white" }}
+            onClick={addToCartHandler}
+            disabled={istBtnDisabled || quantityReachedMax}
+          >
+            {istBtnDisabled ? (
+              <>
+                <Spinner animation="border" size="sm" /> Loading...
+              </>
+            ) : (
+              "Add to cart"
+            )}
+          </Button>
         </div>
-        <div className={productImg}>
-          <img src={img} alt={title} />
-        </div>
-        <h2 title={title}>{title}</h2>
-        <h3>{price.toFixed(2)} EGP</h3>
-        <p className={maximumNotice}>
-          {quantityReachedMax
-            ? "You've reached to the limit"
-            : `Remaining: ${currentRemainingQuantity} item(s)`}
-        </p>
-        <Button
-          variant="info"
-          style={{ color: "white" }}
-          onClick={addToCartHandler}
-          disabled={istBtnDisabled || quantityReachedMax}
-        >
-          {istBtnDisabled ? (
-            <>
-              <Spinner animation="border" size="sm" /> Loading...
-            </>
-          ) : (
-            "Add to cart"
-          )}
-        </Button>
-      </div>
+      </>
     );
   }
 );

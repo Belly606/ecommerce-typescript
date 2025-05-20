@@ -10,6 +10,9 @@ import { PageSuspenseFallback } from "@components/feedback";
 // Lottie Animation
 import { LottieHandler } from "@components/feedback";
 
+// Protected Routes
+import ProtectedRoutes from "@components/Auth/ProtectedRoutes";
+
 // Pages
 const Home = lazy(() => import("@pages/Home"));
 const Wishlist = lazy(() => import("@pages/Wishlist"));
@@ -19,6 +22,7 @@ const Categories = lazy(() => import("@pages/Categories"));
 const Products = lazy(() => import("@pages/Products"));
 const Login = lazy(() => import("@pages/Login"));
 const Register = lazy(() => import("@pages/Register"));
+const Profile = lazy(() => import("@pages/Profile"));
 import Error from "@pages/Error";
 
 const AppRouter = () => {
@@ -49,17 +53,21 @@ const AppRouter = () => {
         {
           path: "/wishlist",
           element: (
-            <PageSuspenseFallback>
-              <Wishlist />
-            </PageSuspenseFallback>
+            <ProtectedRoutes>
+              <PageSuspenseFallback>
+                <Wishlist />
+              </PageSuspenseFallback>
+            </ProtectedRoutes>
           ),
         },
         {
           path: "/cart",
           element: (
-            <PageSuspenseFallback>
-              <Cart />
-            </PageSuspenseFallback>
+            <ProtectedRoutes>
+              <PageSuspenseFallback>
+                <Cart />
+              </PageSuspenseFallback>
+            </ProtectedRoutes>
           ),
         },
         {
@@ -112,6 +120,16 @@ const AppRouter = () => {
             <PageSuspenseFallback>
               <Login />
             </PageSuspenseFallback>
+          ),
+        },
+        {
+          path: "/profile",
+          element: (
+            <ProtectedRoutes>
+              <PageSuspenseFallback>
+                <Profile />
+              </PageSuspenseFallback>
+            </ProtectedRoutes>
           ),
         },
       ],

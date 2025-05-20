@@ -9,8 +9,11 @@ import {
 const useProducts = () => {
   const dispatch = useAppDispatch();
   const params = useParams();
+
   const paramsPrefix = params.prefix;
+
   const { loading, error, records } = useAppSelector((state) => state.products);
+  const accessToken = useAppSelector((state) => state.auth.accessToken);
 
   const cartItems = useAppSelector((state) => state.cart.items);
   const wishlistItemsId = useAppSelector((state) => state.wishlist.itemsId);
@@ -19,6 +22,7 @@ const useProducts = () => {
     ...el,
     quantity: cartItems[el.id] || 0,
     isLiked: wishlistItemsId.includes(el.id),
+    isAuthenticated: accessToken ? true : false,
   }));
 
   useEffect(() => {

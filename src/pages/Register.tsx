@@ -1,48 +1,25 @@
-import { useForm, SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { registerSchema, registerType } from "@validations/registerSchema";
-import useCheckEmailAvailability from "@hooks/useCheckEmailAvailability";
+import useRegister from "@hooks/useRegister";
+import { Navigate } from "react-router-dom";
 import { Heading } from "@components/common";
 import { Input } from "@components/forms";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button, Row, Col, Spinner } from "react-bootstrap";
 
 const Register = () => {
   const {
+    loading,
+    error,
+    accessToken,
+    errors: formErrors,
+    emailAvailabilityStatus,
     register,
     handleSubmit,
-    trigger,
-    getFieldState,
-    formState: { errors },
-  } = useForm<registerType>({
-    mode: "onBlur",
-    resolver: zodResolver(registerSchema),
-  });
+    submitForm,
+    emailOnBlurHandler,
+  } = useRegister();
 
-  const {
-    enteredEmail,
-    emailAvailabilityStatus,
-    checkEmailAvailability,
-    resetCheckEmailAvailability,
-  } = useCheckEmailAvailability();
-
-  const submitForm: SubmitHandler<registerType> = (data) => {
-    console.log(data);
-  };
-
-  const emailOnBlurHandler = async (e: React.FocusEvent<HTMLInputElement>) => {
-    await trigger("email");
-    const value = e.target.value;
-    const { isDirty, invalid } = getFieldState("email");
-
-    if (isDirty && !invalid && enteredEmail !== value) {
-      // Checking
-      checkEmailAvailability(value);
-    }
-
-    if (isDirty && invalid && enteredEmail) {
-      resetCheckEmailAvailability();
-    }
-  };
+  if (accessToken) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <>
@@ -54,14 +31,14 @@ const Register = () => {
               label="First Name"
               name="firstName"
               register={register}
-              error={errors.firstName?.message as string}
+              error={formErrors.firstName?.message as string}
             />
 
             <Input
               label="Last Name"
               name="lastName"
               register={register}
-              error={errors.lastName?.message as string}
+              error={formErrors.lastName?.message as string}
             />
 
             <Input
@@ -70,8 +47,8 @@ const Register = () => {
               register={register}
               onBlur={emailOnBlurHandler}
               error={
-                errors.email?.message
-                  ? errors.email?.message
+                formErrors.email?.message
+                  ? formErrors.email?.message
                   : emailAvailabilityStatus === "notAvailable"
                   ? "This email is already in use."
                   : emailAvailabilityStatus === "failed"
@@ -90,7 +67,11 @@ const Register = () => {
                   ? "This email is available for use."
                   : ""
               }
-              disabled={emailAvailabilityStatus === "checking" ? true : false}
+              disabled={
+                emailAvailabilityStatus === "checking" || loading === "pending"
+                  ? true
+                  : false
+              }
             />
 
             <Input
@@ -98,7 +79,7 @@ const Register = () => {
               name="password"
               type="password"
               register={register}
-              error={errors.password?.message as string}
+              error={formErrors.password?.message as string}
             />
 
             <Input
@@ -106,17 +87,28 @@ const Register = () => {
               name="confirmPassword"
               type="password"
               register={register}
-              error={errors.confirmPassword?.message as string}
+              error={formErrors.confirmPassword?.message as string}
             />
 
             <Button
               variant="info"
               type="submit"
               style={{ color: "white" }}
-              disabled={emailAvailabilityStatus === "checking" ? true : false}
+              disabled={
+                emailAvailabilityStatus === "checking" || loading === "pending"
+                  ? true
+                  : false
+              }
             >
-              Submit
+              {loading === "pending" ? (
+                <>
+                  <Spinner animation="border" size="sm" /> Loading...
+                </>
+              ) : (
+                "Submit"
+              )}
             </Button>
+            {error && <p className="text-danger mt-2">{error}</p>}
           </Form>
         </Col>
       </Row>

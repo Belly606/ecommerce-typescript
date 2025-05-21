@@ -2,13 +2,14 @@ import { useEffect, useState, memo } from "react";
 import { useAppDispatch } from "@store/hooks";
 import { actLikeToggle } from "@store/wishlist/wishlistSlice";
 import { addToCart } from "@store/cart/cartSlice";
-import { Button, Modal, Spinner } from "react-bootstrap";
+import { ProductInfo } from "@components/eCommerce";
 import Like from "@assets/svg/like.svg?react";
 import LikeFill from "@assets/svg/like-fill.svg?react";
+import { Button, Modal, Spinner } from "react-bootstrap";
 import { TProduct } from "@types";
 
 import styles from "./styles.module.css";
-const { product, productImg, maximumNotice, wishlistBtn } = styles;
+const { maximumNotice, wishlistBtn } = styles;
 
 const Product = memo(
   ({
@@ -72,7 +73,7 @@ const Product = memo(
           </Modal.Body>
         </Modal>
 
-        <div className={product}>
+        <ProductInfo title={title} img={img} price={price}>
           <div className={wishlistBtn} onClick={likeToggleHandler}>
             {isLoading ? (
               <Spinner animation="border" size="sm" variant="danger" />
@@ -82,11 +83,6 @@ const Product = memo(
               <Like />
             )}
           </div>
-          <div className={productImg}>
-            <img src={img} alt={title} />
-          </div>
-          <h2 title={title}>{title}</h2>
-          <h3>{price.toFixed(2)} EGP</h3>
           <p className={maximumNotice}>
             {quantityReachedMax
               ? "You've reached to the limit"
@@ -106,7 +102,7 @@ const Product = memo(
               "Add to cart"
             )}
           </Button>
-        </div>
+        </ProductInfo>
       </>
     );
   }

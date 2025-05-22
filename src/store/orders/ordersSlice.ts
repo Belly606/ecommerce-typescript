@@ -17,7 +17,12 @@ const initialState: TOrderSlice = {
 const ordersSlice = createSlice({
   name: "orders",
   initialState,
-  reducers: {},
+  reducers: {
+    resetOrderStatus: (state) => {
+      state.loading = "idle";
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     // Place Order
     builder.addCase(actPlaceOrder.pending, (state) => {
@@ -37,4 +42,7 @@ const ordersSlice = createSlice({
 });
 
 export { actPlaceOrder };
+
+export const { resetOrderStatus } = ordersSlice.actions;
+
 export default ordersSlice.reducer;

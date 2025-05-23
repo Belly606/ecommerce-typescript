@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
-import { actGetOrders } from "@store/orders/ordersSlice";
+import { actGetOrders, resetOrderStatus } from "@store/orders/ordersSlice";
 import { Loading } from "@components/feedback";
 import { Heading } from "@components/common";
 import { Table, Modal } from "react-bootstrap";
@@ -35,6 +35,7 @@ const Orders = () => {
 
     return () => {
       promise.abort();
+      dispatch(resetOrderStatus());
     };
   }, [dispatch]);
   return (

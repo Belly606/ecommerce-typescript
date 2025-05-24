@@ -37,7 +37,7 @@ const Orders = () => {
       </Modal>
 
       <Heading title="My orders" />
-      <Loading status={loading} error={error} type="category">
+      <Loading status={loading} error={error} type="table">
         <Table striped bordered>
           <thead>
             <tr>
